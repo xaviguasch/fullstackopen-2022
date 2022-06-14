@@ -5,7 +5,7 @@ import Button from './Button'
 const Feedback = ({ handleGoodClick, handleNeutralClick, handleBadClick }) => {
   return (
     <div>
-      <h2>Feedback</h2>
+      <h2>give feedback</h2>
 
       <Button handleClick={handleGoodClick} text='Good' />
       <Button handleClick={handleNeutralClick} text='Neutral' />
