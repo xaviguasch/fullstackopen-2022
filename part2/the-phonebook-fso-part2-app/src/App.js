@@ -1,5 +1,9 @@
 import { useState } from 'react'
 
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
 import './App.css'
 
 const App = () => {
@@ -17,7 +21,7 @@ const App = () => {
   const checkRepeats = (formName) =>
     persons.some((p) => p.name.toLowerCase() === formName.toLowerCase())
 
-  const handleNoteChange = (event) => {
+  const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
@@ -48,31 +52,20 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with
-        <input value={filterText} onChange={handleFilterChange} />
-      </div>
-      <form onSubmit={addNameHandler}>
-        <div>
-          name: <input value={newName} onChange={handleNoteChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type='submit'>add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {persons
-          .filter((p) => p.name.toLowerCase().includes(filterText.toLowerCase()))
-          .map((p) => (
-            <li key={p.name}>
-              {p.name} {p.number}
-            </li>
-          ))}
-      </ul>
+      <Filter onFilterText={filterText} onHandleFilterChange={handleFilterChange} />
+
+      <h3>Add a new</h3>
+      <PersonForm
+        onAddNameHandler={addNameHandler}
+        onHandleNameChange={handleNameChange}
+        onHandleNumberChange={handleNumberChange}
+        onNewName={newName}
+        onNewNumber={newNumber}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons onPersons={persons} onFilterText={filterText} />
     </div>
   )
 }
