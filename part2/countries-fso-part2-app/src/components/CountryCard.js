@@ -1,6 +1,8 @@
 import React from 'react'
 
-const CountryCard = ({ countryData }) => {
+import Weather from './Weather'
+
+const CountryCard = ({ countryData, weatherData }) => {
   return (
     <div>
       <h2>{countryData.name}</h2>
@@ -16,6 +18,13 @@ const CountryCard = ({ countryData }) => {
       </ul>
 
       <img src={countryData.flag} alt='' />
+
+      <Weather
+        city={countryData.capital}
+        temperature={weatherData.main.temp}
+        iconCode={weatherData.weather[0].icon}
+        wind={weatherData.wind.speed}
+      />
     </div>
   )
 }
