@@ -19,12 +19,14 @@ const CountryCard = ({ countryData, weatherData }) => {
 
       <img src={countryData.flag} alt='' />
 
-      <Weather
-        city={countryData.capital}
-        temperature={weatherData.main.temp}
-        iconCode={weatherData.weather[0].icon}
-        wind={weatherData.wind.speed}
-      />
+      {/* {weatherData && (
+        <Weather
+          city={countryData.capital}
+          temperature={weatherData.main.temp}
+          iconCode={weatherData.weather[0].icon}
+          wind={weatherData.wind.speed}
+        />
+      )} */}
     </div>
   )
 }

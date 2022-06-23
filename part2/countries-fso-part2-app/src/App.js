@@ -22,19 +22,19 @@ function App() {
       axios.get(`https://restcountries.com/v2/name/${searchTerm}`).then((response) => {
         console.log('more testing')
         if (response.data.length > 10) {
+          setCountries([])
           setShowCard(false)
           setTooManyMatches(true)
-          setCountries([])
         } else if (response.data.length === 1) {
-          setTooManyMatches(false)
-          setShowCard(true)
           setCountries(response.data)
           setSelectedCountry(response.data[0])
           getWeatherDataFromAPI(response.data[0].capital)
+          setTooManyMatches(false)
+          setShowCard(true)
         } else {
+          setCountries(response.data)
           setTooManyMatches(false)
           setShowCard(false)
-          setCountries(response.data)
         }
       })
     }

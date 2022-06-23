@@ -5,6 +5,7 @@ const Weather = ({ city, temperature, iconCode, wind }) => {
 
   return (
     <div>
+      <h2>Weather</h2>
       <h3>Weather in {city}</h3>
       <p>temperature {celciusTemp} Celcius</p>
 
