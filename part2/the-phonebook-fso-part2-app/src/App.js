@@ -44,14 +44,25 @@ const App = () => {
     if (checkRepeats(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      const newContact = { name: newName, number: newNumber, id: persons.length + 1 }
-      setPersons([...persons, newContact])
+      const newContact = { name: newName, number: newNumber }
 
-      personService.create(newContact).then((response) => console.log(response))
+      personService
+        .create(newContact)
+        .then((response) => setPersons([...persons, response.data]))
     }
 
     setNewName('')
     setNewNumber('')
+  }
+
+  const deleteNameHandler = (id) => {
+    const personToDelete = persons.find((p) => p.id === id)
+
+    if (window.confirm(`Delete ${personToDelete.name}`)) {
+      personService.deleteItem(id).then((response) => console.log(response))
+
+      setPersons(persons.filter((p) => p.id !== id))
+    }
   }
 
   return (
@@ -70,7 +81,11 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons onPersons={persons} onFilterText={filterText} />
+      <Persons
+        onPersons={persons}
+        onFilterText={filterText}
+        onDeleteNameHandler={deleteNameHandler}
+      />
     </div>
   )
 }
