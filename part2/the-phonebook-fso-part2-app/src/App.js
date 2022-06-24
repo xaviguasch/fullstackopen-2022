@@ -42,10 +42,26 @@ const App = () => {
     event.preventDefault()
 
     if (checkRepeats(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace old number with a new one?`
+        )
+      ) {
+        const personToUpdate = persons.find(
+          (p) => p.name.toLowerCase() === newName.toLowerCase()
+        )
+        const updatedPerson = { ...personToUpdate, number: newNumber }
+
+        personService.updatePhone(updatedPerson.id, updatedPerson).then((response) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== updatedPerson.id ? person : updatedPerson
+            )
+          )
+        })
+      }
     } else {
       const newContact = { name: newName, number: newNumber }
-
       personService
         .create(newContact)
         .then((response) => setPersons([...persons, response.data]))
