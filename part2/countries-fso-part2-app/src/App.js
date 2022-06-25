@@ -6,8 +6,6 @@ import Search from './components/Search'
 import CountryCard from './components/CountryCard'
 import CountryList from './components/CountryList'
 
-import './App.css'
-
 function App() {
   const [countries, setCountries] = useState([])
   const [searchTerm, setSearchTerm] = useState('')

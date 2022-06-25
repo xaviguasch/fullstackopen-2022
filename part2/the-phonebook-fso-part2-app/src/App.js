@@ -5,10 +5,9 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import SuccessMessage from './components/SuccessMessage'
 
 import personService from './services/persons'
-
-import './App.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,6 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
+  const [successMsg, setSuccessMsg] = useState(null)
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -58,13 +58,22 @@ const App = () => {
               person.id !== updatedPerson.id ? person : updatedPerson
             )
           )
+
+          setSuccessMsg(`Updated ${updatedPerson.name}'s number`)
+          setTimeout(() => {
+            setSuccessMsg(null)
+          }, 5000)
         })
       }
     } else {
       const newContact = { name: newName, number: newNumber }
-      personService
-        .create(newContact)
-        .then((response) => setPersons([...persons, response.data]))
+      personService.create(newContact).then((response) => {
+        setPersons([...persons, response.data])
+        setSuccessMsg(`Added ${response.data.name}`)
+        setTimeout(() => {
+          setSuccessMsg(null)
+        }, 5000)
+      })
     }
 
     setNewName('')
@@ -84,6 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessMessage message={successMsg} />
       <Filter onFilterText={filterText} onHandleFilterChange={handleFilterChange} />
 
       <h3>Add a new</h3>
