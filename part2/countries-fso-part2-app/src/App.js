@@ -8,86 +8,95 @@ import CountryList from './components/CountryList'
 
 function App() {
   const [countries, setCountries] = useState([])
+  const [countriesInSearch, setCountriesInSearch] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [tooManyMatches, setTooManyMatches] = useState(false)
-  const [showCard, setShowCard] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState({})
+  const [showCard, setShowCard] = useState(false)
   const [APIWeatherData, setAPIWeatherData] = useState({})
 
-  const getCountriesFromAPI = (searchTerm) => {
-    console.log('testing')
-    if (searchTerm.length >= 1) {
-      axios.get(`https://restcountries.com/v2/name/${searchTerm}`).then((response) => {
-        console.log('more testing')
-        if (response.data.length > 10) {
-          setCountries([])
-          setShowCard(false)
-          setTooManyMatches(true)
-        } else if (response.data.length === 1) {
-          setCountries(response.data)
-          setSelectedCountry(response.data[0])
-          getWeatherDataFromAPI(response.data[0].capital)
-          setTooManyMatches(false)
-          setShowCard(true)
-        } else {
-          setCountries(response.data)
-          setTooManyMatches(false)
-          setShowCard(false)
-        }
-      })
+  useEffect(() => {
+    axios.get('https://restcountries.com/v3.1/all').then((response) => {
+      setCountries(response.data)
+    })
+  }, [])
+
+  // helper function, checks if an object is empty
+  const isEmpty = (obj) => Object.keys(obj).length === 0
+
+  const showData = () => {
+    // console.log('showData firing!!!')
+    if (countriesInSearch.length === 1) {
+      setSelectedCountry(countriesInSearch[0])
+      setShowCard(true)
+    } else {
+      setShowCard(false)
+      setSelectedCountry({})
     }
   }
 
-  const getWeatherDataFromAPI = (city) => {
-    console.log(city)
-    axios
-      .get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_API_KEY}`
+  // Only when the searchTerm changes, showData will fire
+  useEffect(showData, [searchTerm])
+
+  const getCountriesFromState = (searchTerm) => {
+    setShowCard(false)
+    setSelectedCountry({})
+
+    setCountriesInSearch(
+      countries.filter((country) =>
+        country.name.common.toLowerCase().includes(searchTerm)
       )
-      .then((response) => {
-        console.log('more testing')
-        setAPIWeatherData(response.data)
-      })
+    )
+
+    showData()
   }
+
+  const getWeatherDataFromAPI = () => {
+    if (!isEmpty(selectedCountry)) {
+      // console.log('weather api firing!!!')
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${selectedCountry.capital[0]}&appid=${process.env.REACT_APP_API_KEY}`
+        )
+        .then((response) => {
+          setAPIWeatherData(response.data)
+        })
+    }
+  }
+
+  // Only when the selectedCountry changes, getWeatherDataFromAPI will fire
+  useEffect(getWeatherDataFromAPI, [selectedCountry])
 
   const handleSearchChange = (searchInput) => {
-    if (searchInput.length === 0) {
-      setTooManyMatches(false)
-    }
-
     setSearchTerm(searchInput)
-    getCountriesFromAPI(searchInput)
+    getCountriesFromState(searchInput)
   }
 
   const showCountryCardHandler = (countryName) => {
-    setTooManyMatches(false)
-
-    const singleCountryArr = countries.filter((c) => c.name === countryName)
+    const singleCountryArr = countries.filter((c) => c.name.common === countryName)
 
     setSelectedCountry(singleCountryArr[0])
-    getWeatherDataFromAPI(singleCountryArr[0].capital)
 
     setShowCard(true)
   }
 
   return (
     <div className='App'>
-      <h1>Countries</h1>
-
       <Search onSearchTerm={searchTerm} onHandleSearchChange={handleSearchChange} />
 
-      {tooManyMatches && <p>Too many matches, specify another filter</p>}
+      {countriesInSearch.length > 10 && searchTerm.length > 0 && (
+        <p>Too many matches, specify another filter</p>
+      )}
 
-      {countries.length > 1 && !tooManyMatches && !showCard && (
+      {searchTerm && countriesInSearch.length <= 10 && !showCard && (
         <CountryList
-          countriesData={countries}
+          countriesData={countriesInSearch}
           onShowCountryCardHandler={showCountryCardHandler}
         />
       )}
 
-      {showCard && (
+      {showCard && !isEmpty(APIWeatherData) && (
         <CountryCard
-          key={selectedCountry.name}
+          key={selectedCountry.name.common}
           countryData={selectedCountry}
           weatherData={APIWeatherData}
         />

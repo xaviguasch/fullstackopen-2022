@@ -3,30 +3,32 @@ import React from 'react'
 import Weather from './Weather'
 
 const CountryCard = ({ countryData, weatherData }) => {
+  const langs = Object.values(countryData.languages)
+
   return (
     <div>
-      <h2>{countryData.name}</h2>
+      <h2>{countryData.name.common}</h2>
       <p>capital {countryData.capital}</p>
       <p>area {countryData.area}</p>
 
       <h3>languages</h3>
 
       <ul>
-        {countryData.languages.map((lang) => (
-          <li key={lang.name}>{lang.name}</li>
+        {langs.map((lang) => (
+          <li key={lang}>{lang}</li>
         ))}
       </ul>
 
-      <img src={countryData.flag} alt='' />
+      <img src={countryData.flags.svg} alt='' />
 
-      {/* {weatherData && (
+      {weatherData && (
         <Weather
           city={countryData.capital}
           temperature={weatherData.main.temp}
           iconCode={weatherData.weather[0].icon}
           wind={weatherData.wind.speed}
         />
-      )} */}
+      )}
     </div>
   )
 }

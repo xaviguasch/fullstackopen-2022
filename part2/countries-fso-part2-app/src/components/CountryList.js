@@ -7,10 +7,10 @@ const CountryList = ({ countriesData, onShowCountryCardHandler }) => {
 
   return (
     <div>
-      {countriesData.map((c) => (
-        <div key={c.name}>
-          <p>{c.name}</p>
-          <button onClick={() => buttonClickHandler(c.name)}>Show</button>
+      {countriesData.map((country) => (
+        <div className='country-list-item' key={country.name.common}>
+          <p>{country.name.common}</p>
+          <button onClick={() => buttonClickHandler(country.name.common)}>Show</button>
         </div>
       ))}
     </div>
