@@ -10,9 +10,10 @@ function App() {
   const [countries, setCountries] = useState([])
   const [countriesInSearch, setCountriesInSearch] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [APIWeatherData, setAPIWeatherData] = useState({})
+  // SelectedCountry and showCard shouldn't be states
   const [selectedCountry, setSelectedCountry] = useState({})
   const [showCard, setShowCard] = useState(false)
-  const [APIWeatherData, setAPIWeatherData] = useState({})
 
   useEffect(() => {
     axios.get('https://restcountries.com/v3.1/all').then((response) => {
@@ -20,11 +21,13 @@ function App() {
     })
   }, [])
 
+  console.log(searchTerm, ' from app')
+
   // helper function, checks if an object is empty
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   const showData = () => {
-    // console.log('showData firing!!!')
+    console.log(searchTerm, ' from useEffect')
     if (countriesInSearch.length === 1) {
       setSelectedCountry(countriesInSearch[0])
       setShowCard(true)
@@ -36,19 +39,6 @@ function App() {
 
   // Only when the searchTerm changes, showData will fire
   useEffect(showData, [searchTerm])
-
-  const getCountriesFromState = (searchTerm) => {
-    setShowCard(false)
-    setSelectedCountry({})
-
-    setCountriesInSearch(
-      countries.filter((country) =>
-        country.name.common.toLowerCase().includes(searchTerm)
-      )
-    )
-
-    showData()
-  }
 
   const getWeatherDataFromAPI = () => {
     if (!isEmpty(selectedCountry)) {
@@ -65,6 +55,21 @@ function App() {
 
   // Only when the selectedCountry changes, getWeatherDataFromAPI will fire
   useEffect(getWeatherDataFromAPI, [selectedCountry])
+
+  const getCountriesFromState = (searchTerm) => {
+    setShowCard(false)
+    // selectedCountry gets updated too frequently, YOU MUST CORRECT!!!!
+    setSelectedCountry({})
+
+    setCountriesInSearch(
+      countries.filter((country) =>
+        country.name.common.toLowerCase().includes(searchTerm)
+      )
+    )
+
+    // IT'S REDUNDANT!!!!
+    // showData()
+  }
 
   const handleSearchChange = (searchInput) => {
     setSearchTerm(searchInput)

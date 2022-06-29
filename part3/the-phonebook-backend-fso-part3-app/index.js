@@ -24,12 +24,23 @@ const persons = [
   },
 ]
 
-app.get('/', (request, response) => {
-  response.send('<h1>Welcome to the phonebook!</h1>')
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to the phonebook!</h1>')
 })
 
-app.get('/api/persons', (request, response) => {
-  response.json(persons)
+app.get('/api/persons', (req, res) => {
+  res.json(persons)
+})
+
+app.get('/info', (req, res) => {
+  const numOfEntries = persons.length
+  const currentDate = new Date()
+
+  res.send(`<div>
+  <p>Phonebook has info for ${numOfEntries} people</p>
+  <p>${currentDate}</p>
+  <div>
+  `)
 })
 
 const PORT = 3001
