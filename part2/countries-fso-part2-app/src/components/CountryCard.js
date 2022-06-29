@@ -12,7 +12,6 @@ const CountryCard = ({ countryData }) => {
 
   const getWeatherDataFromAPI = () => {
     if (!isEmpty(countryData)) {
-      // console.log('weather api firing!!!')
       axios
         .get(
           `https://api.openweathermap.org/data/2.5/weather?q=${countryData.capital[0]}&appid=${process.env.REACT_APP_API_KEY}`
