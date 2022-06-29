@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 
 const Weather = ({ city, temperature, iconCode, wind }) => {
   const celciusTemp = (temperature - 273.15).toFixed(2)
