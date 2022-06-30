@@ -48,11 +48,23 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-  const person = { id: Math.floor(Math.random() * 1000000), ...req.body }
+  const newPerson = { id: Math.floor(Math.random() * 1000000), ...req.body }
 
-  persons.push(person)
+  if (!newPerson.name || !newPerson.number) {
+    return res.status(400).json({ error: 'content missing' })
+  }
 
-  res.json(person)
+  const isPersonRepeated = persons.some(
+    (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
+  )
+
+  if (isPersonRepeated) {
+    return res.status(400).json({ error: 'person already exists in the phonebook' })
+  }
+
+  persons.push(newPerson)
+
+  res.json(newPerson)
 })
 
 app.get('/info', (req, res) => {
