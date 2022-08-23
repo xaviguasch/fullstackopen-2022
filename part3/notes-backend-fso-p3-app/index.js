@@ -23,6 +23,24 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
+app.get('/api/notes', (req, res) => {
+  Note.find({}).then((notes) => {
+    res.json(notes)
+  })
+})
+
+app.get('/api/notes/:id', (req, res, next) => {
+  Note.findById(req.params.id)
+    .then((note) => {
+      if (note) {
+        res.json(note)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch((error) => next(error))
+})
+
 app.post('/api/notes', (req, res) => {
   const body = req.body
 
@@ -41,28 +59,10 @@ app.post('/api/notes', (req, res) => {
   })
 })
 
-app.get('/api/notes', (req, res) => {
-  Note.find({}).then((notes) => {
-    res.json(notes)
-  })
-})
-
 app.delete('/api/notes/:id', (req, res) => {
   Note.findByIdAndRemove(req.params.id)
     .then((result) => {
       res.status(204).end()
-    })
-    .catch((error) => next(error))
-})
-
-app.get('/api/notes/:id', (req, res, next) => {
-  Note.findById(req.params.id)
-    .then((note) => {
-      if (note) {
-        res.json(note)
-      } else {
-        res.status(404).end()
-      }
     })
     .catch((error) => next(error))
 })

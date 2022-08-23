@@ -38,10 +38,16 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  Contact.findById(req.params.id).then((contact) => {
-    res.json(contact)
-  })
+app.get('/api/persons/:id', (req, res, next) => {
+  Contact.findById(req.params.id)
+    .then((contact) => {
+      if (contact) {
+        res.json(contact)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch((error) => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -77,6 +83,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
+// ADDED ERROR HANDLING MIDDLEWARE
 const errorHandler = (error, req, res, next) => {
   console.error(error.message)
 
