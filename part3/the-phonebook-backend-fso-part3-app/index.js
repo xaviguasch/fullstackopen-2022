@@ -53,8 +53,6 @@ app.get('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  console.log('body: ', body.name, body.number)
-
   if (body.name === undefined || body.number === undefined) {
     return res.status(400).json({ error: 'content missing' })
   }
@@ -67,6 +65,20 @@ app.post('/api/persons', (req, res) => {
   contact.save().then((savedContact) => {
     res.json(savedContact)
   })
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const { number } = req.body
+
+  Contact.findByIdAndUpdate(
+    req.params.id,
+    { number },
+    { new: true, runValidators: true, context: 'query' }
+  )
+    .then((updatedContact) => {
+      res.json(updatedContact)
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/info', (req, res) => {
